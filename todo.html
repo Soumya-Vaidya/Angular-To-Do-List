@@ -31,7 +31,7 @@
                 <br><br>
                 <form ng-submit="add()">
                     <input ng-model="title"><button class="btn btn-light">Add</button>
-                    <h4>Tasks in the List: {{total()}}</h4>
+                    <h4>Total Pending Tasks: {{total()}}</h4>
                 </form>
             </div>
             <div class="col-3">
@@ -54,7 +54,7 @@
                     <tbody>
                         <tr ng-repeat="t in tasks track by $index">
                             <td scope="row"><input type="checkbox" class="form-check-input text-end" name=""
-                                    ng-model="todo.done" ng-change="updateTotal()"></td>
+                                    ng-model="todo.done" data-ng-change="todo.done ? delfromTotal() : addtoTotal()"></td>
                             <td scope="row"><span class="done-{{todo.done}}">{{ t }}</span></td>
                             <td scope="row">
                                 <button class="btn btn-success opacity-{{todo.done}}"
@@ -74,12 +74,15 @@
         angular.module('todoApp', [])
             .controller('todoController', function ($scope) {
                 $scope.tasks = [];
+                $scope.total_len=0;
                 $scope.add = function () {
                     $scope.tasks.push($scope.title);
                     $scope.title = "";
+                    $scope.total_len = $scope.tasks.length
                 }
                 $scope.delete = function () {
-                    $scope.tasks.splice(this.$index, 1);
+                    $scope.tasks.splice(this.$index, 1);				$scope.delfromTotal();	
+                  
                 }
 
                 $scope.edit = function (index) {
@@ -91,7 +94,22 @@
                 }
 
                 $scope.total = function () {
-                    return $scope.tasks.length;
+                    return $scope.total_len;
+                    // return $scope.totalCount;
+                }
+                
+                $scope.addtoTotal = function () {
+     		
+                    return $scope.total_len++;
+                    // return $scope.totalCount;
+                }
+                $scope.delfromTotal = function () {
+              		
+                    if ($scope.total_len <= 0 ) {
+                    	return 0
+                    }
+              
+                    return $scope.total_len--;
                     // return $scope.totalCount;
                 }
             })
